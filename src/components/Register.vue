@@ -48,7 +48,7 @@
       <button
         type="button"
         class="btn btn-light"
-        @click.prevent="$emit('cancel')"
+        @click.prevent="$emit('sign-in')"
       >
         Cancel
       </button>

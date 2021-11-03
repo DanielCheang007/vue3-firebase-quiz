@@ -1,5 +1,5 @@
 <template>
-  <div v-if="mode === 'Login'" style="max-width: 600px; margin: 2em auto">
+  <div style="max-width: 600px; margin: 2em auto">
     <h1>Sign In</h1>
     <div v-if="errorMsg" class="alert alert-danger" role="alert">
       {{ errorMsg }}
@@ -40,7 +40,7 @@
       <button
         type="button"
         class="btn btn-light"
-        @click.prevent="mode = 'Register'"
+        @click.prevent="$emit('sign-up')"
       >
         SignUp
       </button>
@@ -52,9 +52,6 @@
       </button>
     </div>
   </div>
-
-  <Register v-else-if="mode === 'Register'" @cancel="mode = 'Login'">
-  </Register>
 </template>
 
 <script>
@@ -67,14 +64,8 @@ import {
   GithubAuthProvider,
 } from "firebase/auth";
 
-import Register from "./Register";
-
 export default {
-  components: {
-    Register,
-  },
   setup() {
-    const mode = ref("Login");
     const errorMsg = ref(null);
     const successMsg = ref(null);
     const state = reactive({
@@ -114,7 +105,6 @@ export default {
     });
 
     return {
-      mode,
       errorMsg,
       successMsg,
       ...toRefs(state),

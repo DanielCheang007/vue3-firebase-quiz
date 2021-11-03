@@ -2,7 +2,13 @@
   <Nav></Nav>
   <div v-if="!loading" class="container">
     <Profile v-if="isSignedIn"></Profile>
-    <Login v-else></Login>
+    <template v-else>
+      <Login v-if="mode === 'Login'" @sign-up="mode = 'Register'"></Login>
+      <Register
+        v-else-if="mode === 'Register'"
+        @sign-in="mode = 'Login'"
+      ></Register>
+    </template>
   </div>
 </template>
 
@@ -14,14 +20,18 @@ import Nav from "./components/Nav";
 import Login from "./components/Login";
 import Profile from "./components/Profile";
 
+import Register from "./components/Register";
+
 export default {
   name: "App",
   components: {
     Nav,
     Profile,
     Login,
+    Register,
   },
   setup() {
+    const mode = ref("Login");
     const loading = ref(true);
     const isSignedIn = ref(false);
 
@@ -32,6 +42,7 @@ export default {
     });
 
     return {
+      mode,
       loading,
       isSignedIn,
     };
