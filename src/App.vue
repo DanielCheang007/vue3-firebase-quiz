@@ -25,8 +25,6 @@ export default {
     const loading = ref(true);
     const isSignedIn = ref(false);
 
-    console.log(getAuth);
-
     const auth = getAuth();
     onAuthStateChanged(auth, (user) => {
       isSignedIn.value = !!user;

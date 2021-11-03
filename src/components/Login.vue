@@ -38,13 +38,24 @@
       </div>
       <button type="submit" class="btn btn-primary">Submit</button>
     </form>
+
+    <div class="mt-5">
+      <button @click.prevent="onOAuthGithub" class="btn btn-dark">
+        Sign In with Github
+      </button>
+    </div>
   </div>
 </template>
 
 <script>
 import { ref, reactive, toRefs } from "vue";
-import { login } from "@/api/auth";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+  signInWithPopup,
+  GithubAuthProvider,
+} from "firebase/auth";
 
 export default {
   setup() {
@@ -59,9 +70,21 @@ export default {
       successMsg.value = null;
 
       try {
-        await login(state);
+        const auth = getAuth();
+        await signInWithEmailAndPassword(auth, state.email, state.password);
         errorMsg.value = null;
         successMsg.value = "You've logged in";
+      } catch (e) {
+        errorMsg.value = `${e.code}: ${e.message}`;
+      }
+    }
+
+    async function onOAuthGithub() {
+      try {
+        const auth = getAuth();
+        const provider = new GithubAuthProvider();
+        await signInWithPopup(auth, provider);
+        errorMsg.value = null;
       } catch (e) {
         errorMsg.value = `${e.code}: ${e.message}`;
       }
@@ -79,6 +102,7 @@ export default {
       successMsg,
       ...toRefs(state),
       onSubmit,
+      onOAuthGithub,
     };
   },
 };
