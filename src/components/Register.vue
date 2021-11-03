@@ -1,6 +1,6 @@
 <template>
-  <div v-if="mode === 'Login'" style="max-width: 600px; margin: 2em auto">
-    <h1>Sign In</h1>
+  <div style="max-width: 600px; margin: 2em auto">
+    <h1>Sign Up A New Account</h1>
     <div v-if="errorMsg" class="alert alert-danger" role="alert">
       {{ errorMsg }}
     </div>
@@ -32,94 +32,62 @@
           required
         />
       </div>
-      <div class="mb-3 form-check">
-        <input type="checkbox" class="form-check-input" id="exampleCheck1" />
-        <label class="form-check-label" for="exampleCheck1">Check me out</label>
+      <div class="mb-3">
+        <label for="exampleInputPassword1" class="form-label"
+          >Password Confirmation</label
+        >
+        <input
+          type="password"
+          class="form-control"
+          id="exampleInputPassword1"
+          v-model="passwordConfirmation"
+          required
+        />
       </div>
       <button type="submit" class="btn btn-primary">Submit</button>
       <button
         type="button"
         class="btn btn-light"
-        @click.prevent="mode = 'Register'"
+        @click.prevent="$emit('cancel')"
       >
-        SignUp
+        Cancel
       </button>
     </form>
-
-    <div class="mt-5">
-      <button @click.prevent="onOAuthGithub" class="btn btn-dark">
-        Sign In with Github
-      </button>
-    </div>
   </div>
-
-  <Register v-else-if="mode === 'Register'" @cancel="mode = 'Login'">
-  </Register>
 </template>
 
 <script>
 import { ref, reactive, toRefs } from "vue";
-import {
-  getAuth,
-  signInWithEmailAndPassword,
-  onAuthStateChanged,
-  signInWithPopup,
-  GithubAuthProvider,
-} from "firebase/auth";
-
-import Register from "./Register";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 
 export default {
-  components: {
-    Register,
-  },
   setup() {
-    const mode = ref("Login");
     const errorMsg = ref(null);
-    const successMsg = ref(null);
+
     const state = reactive({
       email: null,
       password: null,
+      passwordConfirmation: null,
     });
 
     async function onSubmit() {
-      successMsg.value = null;
-
       try {
-        const auth = getAuth();
-        await signInWithEmailAndPassword(auth, state.email, state.password);
-        errorMsg.value = null;
-        successMsg.value = "You've logged in";
-      } catch (e) {
-        errorMsg.value = `${e.code}: ${e.message}`;
-      }
-    }
+        if (state.password !== state.passwordConfirmation) {
+          throw new Error("Password Not Matched!");
+        }
 
-    async function onOAuthGithub() {
-      try {
         const auth = getAuth();
-        const provider = new GithubAuthProvider();
-        await signInWithPopup(auth, provider);
+        await createUserWithEmailAndPassword(auth, state.email, state.password);
         errorMsg.value = null;
       } catch (e) {
         errorMsg.value = `${e.code}: ${e.message}`;
       }
     }
-
-    const auth = getAuth();
-    onAuthStateChanged(auth, (user) => {
-      if (!user) {
-        errorMsg.value = "Please Sign In first";
-      }
-    });
 
     return {
-      mode,
       errorMsg,
-      successMsg,
       ...toRefs(state),
       onSubmit,
-      onOAuthGithub,
     };
   },
 };
