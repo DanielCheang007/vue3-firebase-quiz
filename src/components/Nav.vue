@@ -19,7 +19,7 @@
             <a class="nav-link active" aria-current="page" href="#">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Link</a>
+            <a class="nav-link" href="#">{{ currentUser.email }}</a>
           </li>
           <li class="nav-item dropdown">
             <a
@@ -64,7 +64,24 @@
 </template>
 
 <script>
-export default {};
+import { reactive } from "vue";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+export default {
+  setup() {
+    const currentUser = reactive({
+      email: null,
+    });
+
+    const auth = getAuth();
+    onAuthStateChanged(auth, (user) => {
+      currentUser.email = user?.email;
+    });
+
+    return {
+      currentUser,
+    };
+  },
+};
 </script>
 
 <style>
