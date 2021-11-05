@@ -1,7 +1,7 @@
 <template>
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#">Navbar</a>
+      <router-link class="navbar-brand" to="/">Quiz</router-link>
       <button
         class="navbar-toggler"
         type="button"
@@ -16,10 +16,9 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">{{ currentUser.email }}</a>
+            <router-link class="nav-link active" aria-current="page" to="/">
+              Home
+            </router-link>
           </li>
           <li class="nav-item dropdown">
             <a
@@ -58,29 +57,20 @@
           />
           <button class="btn btn-outline-success" type="submit">Search</button>
         </form>
+        <LoginNav style="margin-left: 2px"></LoginNav>
       </div>
     </div>
   </nav>
 </template>
 
 <script>
-import { reactive } from "vue";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import LoginNav from "@/components/LoginNav";
+
 export default {
-  setup() {
-    const currentUser = reactive({
-      email: null,
-    });
-
-    const auth = getAuth();
-    onAuthStateChanged(auth, (user) => {
-      currentUser.email = user?.email;
-    });
-
-    return {
-      currentUser,
-    };
+  components: {
+    LoginNav,
   },
+  setup() {},
 };
 </script>
 

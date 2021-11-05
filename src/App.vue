@@ -1,51 +1,38 @@
 <template>
   <Nav></Nav>
-  <div v-if="!loading" class="container">
-    <Profile v-if="isSignedIn"></Profile>
-    <template v-else>
-      <Login v-if="mode === 'Login'" @sign-up="mode = 'Register'"></Login>
-      <Register
-        v-else-if="mode === 'Register'"
-        @sign-in="mode = 'Login'"
-      ></Register>
-    </template>
+
+  <div class="container">
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
-import { ref } from "vue";
+// import { ref } from "vue";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { useRouter } from "vue-router";
 
 import Nav from "./components/Nav";
-import Login from "./components/Login";
-import Profile from "./components/Profile";
-
-import Register from "./components/Register";
 
 export default {
   name: "App",
   components: {
     Nav,
-    Profile,
-    Login,
-    Register,
   },
   setup() {
-    const mode = ref("Login");
-    const loading = ref(true);
-    const isSignedIn = ref(false);
+    const router = useRouter();
 
-    const auth = getAuth();
-    onAuthStateChanged(auth, (user) => {
-      isSignedIn.value = !!user;
-      loading.value = false;
+    router.beforeEach((to, from, next) => {
+      const auth = getAuth();
+
+      console.log(to);
+      console.log(auth.currentUser);
+
+      if (to.path !== "/login" && auth.currentUser === null) {
+        next("/login");
+      } else {
+        next();
+      }
     });
-
-    return {
-      mode,
-      loading,
-      isSignedIn,
-    };
   },
 };
 </script>

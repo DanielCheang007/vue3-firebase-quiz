@@ -4,9 +4,6 @@
     <div v-if="errorMsg" class="alert alert-danger" role="alert">
       {{ errorMsg }}
     </div>
-    <div v-if="successMsg" class="alert alert-success" role="alert">
-      {{ successMsg }}
-    </div>
     <form @submit.prevent="onSubmit">
       <div class="mb-3">
         <label for="exampleInputEmail1" class="form-label">Email address</label>
@@ -56,6 +53,7 @@
 
 <script>
 import { ref, reactive, toRefs } from "vue";
+import { useRouter } from "vue-router";
 import {
   getAuth,
   signInWithEmailAndPassword,
@@ -67,20 +65,20 @@ import {
 export default {
   setup() {
     const errorMsg = ref(null);
-    const successMsg = ref(null);
     const state = reactive({
       email: null,
       password: null,
     });
 
-    async function onSubmit() {
-      successMsg.value = null;
+    const router = useRouter();
 
+    async function onSubmit() {
       try {
         const auth = getAuth();
         await signInWithEmailAndPassword(auth, state.email, state.password);
         errorMsg.value = null;
-        successMsg.value = "You've logged in";
+
+        router.push("/");
       } catch (e) {
         errorMsg.value = `${e.code}: ${e.message}`;
       }
@@ -92,6 +90,7 @@ export default {
         const provider = new GithubAuthProvider();
         await signInWithPopup(auth, provider);
         errorMsg.value = null;
+        router.push("/");
       } catch (e) {
         errorMsg.value = `${e.code}: ${e.message}`;
       }
@@ -106,7 +105,6 @@ export default {
 
     return {
       errorMsg,
-      successMsg,
       ...toRefs(state),
       onSubmit,
       onOAuthGithub,
