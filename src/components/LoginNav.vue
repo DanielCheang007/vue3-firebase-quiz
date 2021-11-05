@@ -10,7 +10,6 @@
 
 <script>
 import { reactive, toRefs } from "vue";
-import { useRouter } from "vue-router";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 
 export default {
@@ -19,20 +18,16 @@ export default {
       user: null,
     });
 
-    const router = useRouter();
+    const auth = getAuth();
 
     async function onSignOut() {
       try {
-        const auth = getAuth();
         await signOut(auth);
-
-        router.push("/login");
       } catch (e) {
         console.log(e);
       }
     }
 
-    const auth = getAuth();
     onAuthStateChanged(auth, (user) => {
       state.user = user;
     });
