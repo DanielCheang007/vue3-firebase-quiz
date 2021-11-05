@@ -7,9 +7,7 @@
 </template>
 
 <script>
-// import { ref } from "vue";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { useRoute, useRouter } from "vue-router";
+import useAuth from "@/auth";
 
 import Nav from "./components/Nav";
 
@@ -19,26 +17,7 @@ export default {
     Nav,
   },
   setup() {
-    const route = useRoute();
-    const router = useRouter();
-    const auth = getAuth();
-
-    // router.beforeEach((to, from, next) => {
-    //   console.log(to);
-    //   console.log(auth.currentUser);
-
-    //   if (to.path !== "/login" && auth.currentUser === null) {
-    //     next("/login");
-    //   } else {
-    //     next();
-    //   }
-    // });
-
-    onAuthStateChanged(auth, (user) => {
-      if (route.path !== "/login" && user === null) {
-        router.push("/login");
-      }
-    });
+    useAuth();
   },
 };
 </script>

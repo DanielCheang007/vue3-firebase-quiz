@@ -6,6 +6,8 @@
   <template v-else>
     <router-link to="/login" class="btn btn-primary">Sign In</router-link>
   </template>
+
+  <router-link to="/sign_up" class="btn btn-primary">Sign Up</router-link>
 </template>
 
 <script>

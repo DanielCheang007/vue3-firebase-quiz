@@ -20,6 +20,17 @@
               Home
             </router-link>
           </li>
+
+          <li class="nav-item">
+            <router-link
+              class="nav-link active"
+              aria-current="page"
+              to="/questions"
+            >
+              Questions
+            </router-link>
+          </li>
+
           <li class="nav-item dropdown">
             <a
               class="nav-link dropdown-toggle"
@@ -57,7 +68,7 @@
           />
           <button class="btn btn-outline-success" type="submit">Search</button>
         </form>
-        <LoginNav style="margin-left: 2px"></LoginNav>
+        <LoginNav></LoginNav>
       </div>
     </div>
   </nav>
