@@ -20,7 +20,7 @@
 
       <router-link
         :to="`/questions/${question.id}/edit`"
-        class="btn btn-primary btn-xs"
+        class="btn btn-primary"
       >
         Edit
       </router-link>
